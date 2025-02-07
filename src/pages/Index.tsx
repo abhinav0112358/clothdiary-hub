@@ -1,11 +1,45 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Hero } from "@/components/Hero";
+import { ProductCard } from "@/components/ProductCard";
+import { Product } from "@/types";
+import { useEffect, useState } from "react";
 
 const Index = () => {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    // This is a placeholder. In a real app, you'd fetch from your API
+    setFeaturedProducts([
+      {
+        id: "1",
+        name: "Classic White Shirt",
+        description: "Timeless elegance in pure cotton",
+        price: 89.99,
+        category: "clothing",
+        imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+        inventory: 10,
+      },
+      {
+        id: "2",
+        name: "Leather-bound Journal",
+        description: "Premium leather diary",
+        price: 49.99,
+        category: "diary",
+        imageUrl: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b",
+        inventory: 15,
+      },
+    ]);
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen">
+      <Hero />
+      <div className="page-container">
+        <h2 className="font-display text-3xl mb-8">Featured Products</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
       </div>
     </div>
   );
