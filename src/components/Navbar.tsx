@@ -1,10 +1,12 @@
+
 import { Link } from "react-router-dom";
-import { ShoppingCart, Menu } from "lucide-react";
+import { ShoppingCart, Menu, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const userRole = localStorage.getItem("userRole");
 
   return (
     <nav className="glass-panel sticky top-0 z-50 w-full border-b">
@@ -26,11 +28,26 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Link to="/cart">
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-            </Button>
-          </Link>
+          {userRole ? (
+            <>
+              <Link to={userRole === "admin" ? "/admin/products" : "/profile"}>
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/cart">
+                <Button variant="ghost" size="icon">
+                  <ShoppingCart className="h-5 w-5" />
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <Link to="/auth/login">
+              <Button variant="outline" size="sm">
+                Sign In
+              </Button>
+            </Link>
+          )}
           <Button
             variant="ghost"
             size="icon"
