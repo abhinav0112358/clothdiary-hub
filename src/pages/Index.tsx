@@ -1,3 +1,4 @@
+
 import { Hero } from "@/components/Hero";
 import { ProductCard } from "@/components/ProductCard";
 import { Product } from "@/types";
@@ -7,27 +8,34 @@ const Index = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    // This is a placeholder. In a real app, you'd fetch from your API
-    setFeaturedProducts([
-      {
-        id: "1",
-        name: "Classic White Shirt",
-        description: "Timeless elegance in pure cotton",
-        price: 89.99,
-        category: "clothing",
-        imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
-        inventory: 10,
-      },
-      {
-        id: "2",
-        name: "Leather-bound Journal",
-        description: "Premium leather diary",
-        price: 49.99,
-        category: "diary",
-        imageUrl: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b",
-        inventory: 15,
-      },
-    ]);
+    const savedProducts = localStorage.getItem("products");
+    if (savedProducts) {
+      setFeaturedProducts(JSON.parse(savedProducts));
+    } else {
+      // Fallback to demo products if no products have been added
+      setFeaturedProducts([
+        {
+          id: "1",
+          name: "Classic White Shirt",
+          description: "Timeless elegance in pure cotton",
+          price: 89.99,
+          category: "clothing",
+          imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+          inventory: 10,
+          offer: 0,
+        },
+        {
+          id: "2",
+          name: "Leather-bound Journal",
+          description: "Premium leather diary",
+          price: 49.99,
+          category: "diary",
+          imageUrl: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b",
+          inventory: 15,
+          offer: 0,
+        },
+      ]);
+    }
   }, []);
 
   return (
