@@ -1,3 +1,4 @@
+
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -124,6 +125,19 @@ const AdminProducts = () => {
       offer: "",
     });
     setIsDialogOpen(false);
+  };
+
+  const handleUpdateOrderStatus = (orderId: string, newStatus: Order["status"]) => {
+    const updatedOrders = orders.map((order) =>
+      order.id === orderId ? { ...order, status: newStatus } : order
+    );
+    setOrders(updatedOrders);
+    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+
+    toast({
+      title: "Order status updated",
+      description: `Order ${orderId} has been marked as ${newStatus}.`,
+    });
   };
 
   return (
@@ -305,6 +319,7 @@ const AdminProducts = () => {
                   <TableHead>Items</TableHead>
                   <TableHead>Total Price</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -335,6 +350,34 @@ const AdminProducts = () => {
                       >
                         {order.status}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        {order.status === "pending" && (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="bg-green-500 text-white hover:bg-green-600"
+                              onClick={() =>
+                                handleUpdateOrderStatus(order.id, "completed")
+                              }
+                            >
+                              Complete
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="bg-red-500 text-white hover:bg-red-600"
+                              onClick={() =>
+                                handleUpdateOrderStatus(order.id, "cancelled")
+                              }
+                            >
+                              Cancel
+                            </Button>
+                          </>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
