@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { ShoppingCart, User, Heart, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,11 @@ export const Navbar = () => {
       <nav className="sticky top-0 z-50 w-full bg-white border-b">
         <div className="container mx-auto flex flex-col items-center px-4 py-4">
           <Link to="/" className="mb-4">
-            <h1 className="font-display text-2xl">ELEGANCE</h1>
+            <img 
+              src="/lovable-uploads/b64569f8-98df-4df0-87e0-069d5835bbcd.png"
+              alt="Costerbox Logo"
+              className="h-8"
+            />
           </Link>
 
           <div className="hidden lg:flex items-center space-x-8 mb-4">
