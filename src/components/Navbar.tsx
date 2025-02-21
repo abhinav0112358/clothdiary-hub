@@ -38,7 +38,7 @@ export const Navbar = () => {
               Diaries
             </Link>
             <Link to="/clothing" className="hover:text-primary/80 transition-colors">
-              Gameha
+              Gamcha
             </Link>
             <Link to="/clothing" className="hover:text-primary/80 transition-colors">
               Gifts for Your Beloved
