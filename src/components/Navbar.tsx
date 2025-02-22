@@ -3,11 +3,31 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, User, Heart, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const userRole = localStorage.getItem("userRole");
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const count = cart.reduce((total: number, item: any) => total + item.quantity, 0);
+      setCartCount(count);
+    };
+
+    updateCartCount();
+    window.addEventListener("storage", updateCartCount);
+    
+    // Custom event listener for cart updates
+    window.addEventListener("cartUpdated", updateCartCount);
+
+    return () => {
+      window.removeEventListener("storage", updateCartCount);
+      window.removeEventListener("cartUpdated", updateCartCount);
+    };
+  }, []);
 
   return (
     <>
@@ -83,7 +103,7 @@ export const Navbar = () => {
                   <Button variant="ghost" size="icon" className="relative">
                     <ShoppingCart className="h-5 w-5" />
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                      0
+                      {cartCount}
                     </span>
                   </Button>
                 </Link>
