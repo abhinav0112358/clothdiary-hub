@@ -1,3 +1,4 @@
+
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -5,37 +6,18 @@ import { useState } from "react";
 import { Order, Product } from "@/types";
 import {
   Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { ProductsList } from "./components/ProductsList";
+import { OrdersList } from "./components/OrdersList";
+import { AddProductDialog } from "./components/AddProductDialog";
 
 const AdminProducts = () => {
   const { toast } = useToast();
@@ -139,8 +121,6 @@ const AdminProducts = () => {
     });
   };
 
-  const usdToInr = (price: number) => Math.round(price * 83);
-
   return (
     <div className="min-h-screen bg-background flex">
       <AdminSidebar />
@@ -161,229 +141,26 @@ const AdminProducts = () => {
                   Add Product
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[550px]">
-                <DialogHeader>
-                  <DialogTitle>Add New Product</DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleAddProduct} className="space-y-6 mt-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Product Name</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={newProduct.name}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="price">Price ($)</Label>
-                      <Input
-                        id="price"
-                        name="price"
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={newProduct.price}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
-                      id="description"
-                      name="description"
-                      value={newProduct.description}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="category">Category</Label>
-                      <Select
-                        value={newProduct.category}
-                        onValueChange={handleCategoryChange}
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="clothing">Clothing</SelectItem>
-                          <SelectItem value="diary">Diary</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="inventory">Inventory</Label>
-                      <Input
-                        id="inventory"
-                        name="inventory"
-                        type="number"
-                        min="0"
-                        value={newProduct.inventory}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="imageUrl">Image URL</Label>
-                      <Input
-                        id="imageUrl"
-                        name="imageUrl"
-                        type="url"
-                        value={newProduct.imageUrl}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="offer">Discount (%)</Label>
-                      <Input
-                        id="offer"
-                        name="offer"
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={newProduct.offer}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end space-x-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsDialogOpen(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit">Add Product</Button>
-                  </div>
-                </form>
-              </DialogContent>
+              <AddProductDialog
+                isOpen={isDialogOpen}
+                onOpenChange={setIsDialogOpen}
+                onSubmit={handleAddProduct}
+                product={newProduct}
+                onInputChange={handleInputChange}
+                onCategoryChange={handleCategoryChange}
+              />
             </Dialog>
           </div>
 
           <TabsContent value="products" className="bg-card rounded-lg p-6">
-            {products.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                No products yet. Click the button above to add your first product.
-              </div>
-            ) : (
-              <div className="grid gap-6">
-                {products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <img
-                        src={product.imageUrl}
-                        alt={product.name}
-                        className="h-16 w-16 rounded object-cover"
-                      />
-                      <div>
-                        <h3 className="font-medium">{product.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          ₹{usdToInr(product.price).toFixed(0)}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        Edit
-                      </Button>
-                      <Button variant="destructive" size="sm">
-                        Delete
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            <ProductsList products={products} />
           </TabsContent>
 
           <TabsContent value="orders" className="bg-card rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order ID</TableHead>
-                  <TableHead>Customer Name</TableHead>
-                  <TableHead>Time Placed</TableHead>
-                  <TableHead>Items</TableHead>
-                  <TableHead>Total Price</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.id}</TableCell>
-                    <TableCell>{order.customerName}</TableCell>
-                    <TableCell>
-                      {new Date(order.timePlaced).toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      {order.items.map((item) => (
-                        <div key={item.productId} className="text-sm">
-                          {item.quantity}x {item.name} (₹{usdToInr(item.price).toFixed(0)})
-                        </div>
-                      ))}
-                    </TableCell>
-                    <TableCell>₹{usdToInr(order.totalPrice).toFixed(0)}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          order.status === "completed"
-                            ? "success"
-                            : order.status === "cancelled"
-                            ? "destructive"
-                            : "default"
-                        }
-                      >
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        {order.status === "pending" && (
-                          <>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="bg-green-500 text-white hover:bg-green-600"
-                              onClick={() =>
-                                handleUpdateOrderStatus(order.id, "completed")
-                              }
-                            >
-                              Complete
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="bg-red-500 text-white hover:bg-red-600"
-                              onClick={() =>
-                                handleUpdateOrderStatus(order.id, "cancelled")
-                              }
-                            >
-                              Cancel
-                            </Button>
-                          </>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <OrdersList 
+              orders={orders}
+              onUpdateStatus={handleUpdateOrderStatus}
+            />
           </TabsContent>
         </Tabs>
       </div>
