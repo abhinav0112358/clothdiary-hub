@@ -16,6 +16,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     ? product.price * (1 - product.offer / 100)
     : product.price;
 
+  // Convert USD to INR (approximate conversion rate)
+  const usdToInr = (price: number) => Math.round(price * 83);
+
   const addToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
     const existingItem = cart.find((item: any) => item.id === product.id);
@@ -55,11 +58,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <p className="text-lg font-medium">
-              ${discountedPrice.toFixed(2)}
+              ₹{usdToInr(discountedPrice).toFixed(0)}
             </p>
             {product.offer > 0 && (
               <p className="text-sm text-muted-foreground line-through">
-                ${product.price.toFixed(2)}
+                ₹{usdToInr(product.price).toFixed(0)}
               </p>
             )}
           </div>

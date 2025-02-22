@@ -1,4 +1,3 @@
-
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -140,10 +139,12 @@ const AdminProducts = () => {
     });
   };
 
+  const usdToInr = (price: number) => Math.round(price * 83);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex">
       <AdminSidebar />
-      <div className="ml-64 p-8">
+      <div className="flex-1 p-8">
         <Tabs defaultValue="products">
           <div className="flex justify-between items-center mb-8">
             <div className="space-y-1">
@@ -291,7 +292,7 @@ const AdminProducts = () => {
                       <div>
                         <h3 className="font-medium">{product.name}</h3>
                         <p className="text-sm text-muted-foreground">
-                          ${product.price.toFixed(2)}
+                          ₹{usdToInr(product.price).toFixed(0)}
                         </p>
                       </div>
                     </div>
@@ -333,11 +334,11 @@ const AdminProducts = () => {
                     <TableCell>
                       {order.items.map((item) => (
                         <div key={item.productId} className="text-sm">
-                          {item.quantity}x {item.name}
+                          {item.quantity}x {item.name} (₹{usdToInr(item.price).toFixed(0)})
                         </div>
                       ))}
                     </TableCell>
-                    <TableCell>${order.totalPrice.toFixed(2)}</TableCell>
+                    <TableCell>₹{usdToInr(order.totalPrice).toFixed(0)}</TableCell>
                     <TableCell>
                       <Badge
                         variant={
