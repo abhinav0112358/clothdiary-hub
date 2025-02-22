@@ -122,9 +122,9 @@ const AdminProducts = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="flex min-h-screen bg-background">
       <AdminSidebar />
-      <div className="flex-1 p-8">
+      <main className="flex-1 ml-64 p-8 pt-[132px]">
         <Tabs defaultValue="products">
           <div className="flex justify-between items-center mb-8">
             <div className="space-y-1">
@@ -163,7 +163,7 @@ const AdminProducts = () => {
             />
           </TabsContent>
         </Tabs>
-      </div>
+      </main>
     </div>
   );
 };
