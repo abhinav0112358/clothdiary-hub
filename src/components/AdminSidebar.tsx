@@ -19,7 +19,7 @@ export const AdminSidebar = () => {
   ];
 
   return (
-    <div className="admin-sidebar">
+    <div className="fixed left-0 h-[calc(100vh-132px)] w-64 bg-card border-r border-border p-4 top-[132px] overflow-y-auto">
       <Link to="/admin" className="font-display text-xl">
         Admin Panel
       </Link>

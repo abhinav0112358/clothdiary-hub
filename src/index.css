@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Tenor+Sans&display=swap');
 
 @tailwind base;
@@ -55,10 +56,6 @@
   @apply backdrop-blur-md bg-white/80 shadow-lg;
 }
 
-.admin-sidebar {
-  @apply fixed left-0 top-0 h-full w-64 bg-card border-r border-border p-4;
-}
-
 .page-container {
-  @apply container mx-auto px-4 py-8;
+  @apply container mx-auto px-4 py-8 ml-64 pt-[132px];
 }
