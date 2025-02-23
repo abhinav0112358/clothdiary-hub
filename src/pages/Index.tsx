@@ -5,6 +5,7 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Footer } from "@/components/Footer";
 
 export default function Index() {
   // Sample products for each category
@@ -173,6 +174,7 @@ export default function Index() {
           </section>
         );
       })}
+      <Footer />
     </main>
   );
 }
