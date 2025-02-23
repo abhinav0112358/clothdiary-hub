@@ -1,56 +1,71 @@
-
 import { Hero } from "@/components/Hero";
-import { ProductCard } from "@/components/ProductCard";
+import { Button } from "@/components/ui/button";
+import { ShoppingBag } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Product } from "@/types";
-import { useEffect, useState } from "react";
 
-const Index = () => {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const savedProducts = localStorage.getItem("products");
-    if (savedProducts) {
-      setFeaturedProducts(JSON.parse(savedProducts));
-    } else {
-      // Fallback to demo products if no products have been added
-      setFeaturedProducts([
-        {
-          id: "1",
-          name: "Classic White Shirt",
-          description: "Timeless elegance in pure cotton",
-          price: 89.99,
-          category: "clothing",
-          imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
-          inventory: 10,
-          offer: 0,
-        },
-        {
-          id: "2",
-          name: "Leather-bound Journal",
-          description: "Premium leather diary",
-          price: 49.99,
-          category: "diary",
-          imageUrl: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b",
-          inventory: 15,
-          offer: 0,
-        },
-      ]);
-    }
-  }, []);
+export default function Index() {
+  const featuredProducts: Product[] = [
+    {
+      id: "1",
+      name: "Classic Tote Bag",
+      description: "A versatile tote bag for everyday use",
+      price: 29.99,
+      category: "tote_bags",
+      imageUrl: "/placeholder.svg",
+      inventory: 50,
+      offer: 10,
+    },
+    {
+      id: "2",
+      name: "Designer Diary",
+      description: "Beautiful handcrafted diary",
+      price: 19.99,
+      category: "diaries",
+      imageUrl: "/placeholder.svg",
+      inventory: 30,
+    },
+  ];
 
   return (
-    <div className="min-h-screen">
+    <main>
       <Hero />
-      <div className="page-container">
-        <h2 className="font-display text-3xl mb-8">Featured Products</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+      <section className="bg-white py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-display mb-8 text-center">
+            Featured Products
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {featuredProducts.map((product) => (
+              <div
+                key={product.id}
+                className="bg-card rounded-lg shadow-md overflow-hidden"
+              >
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    {product.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl font-bold">₹{Math.round(product.price * 83)}</span>
+                    <Link to={`/product/${product.id}`}>
+                      <Button>
+                        <ShoppingBag className="w-4 h-4 mr-2" />
+                        View Product
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
-};
-
-export default Index;
+}

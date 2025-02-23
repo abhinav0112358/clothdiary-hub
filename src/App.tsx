@@ -13,6 +13,13 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import ToteBags from "./pages/ToteBags";
 import TShirts from "./pages/TShirts";
+import Patchwork from "./pages/Patchwork";
+import Diaries from "./pages/Diaries";
+import Gamcha from "./pages/Gamcha";
+import Gifts from "./pages/Gifts";
+import Custom from "./pages/Custom";
+import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +38,13 @@ const App = () => (
           <Route path="/profile" element={<Profile />} />
           <Route path="/tote-bags" element={<ToteBags />} />
           <Route path="/t-shirts" element={<TShirts />} />
+          <Route path="/patchwork" element={<Patchwork />} />
+          <Route path="/diaries" element={<Diaries />} />
+          <Route path="/gamcha" element={<Gamcha />} />
+          <Route path="/gifts" element={<Gifts />} />
+          <Route path="/custom" element={<Custom />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
@@ -39,4 +53,3 @@ const App = () => (
 );
 
 export default App;
-
