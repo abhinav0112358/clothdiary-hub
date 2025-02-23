@@ -81,7 +81,7 @@ const AdminProducts = () => {
       name: newProduct.name,
       description: newProduct.description,
       price: parseFloat(newProduct.price),
-      category: newProduct.category as "clothing" | "diary",
+      category: newProduct.category as Product["category"],
       imageUrl: newProduct.imageUrl,
       inventory: parseInt(newProduct.inventory),
       offer: parseFloat(newProduct.offer || "0"),
