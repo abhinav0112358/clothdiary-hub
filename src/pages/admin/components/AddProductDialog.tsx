@@ -63,7 +63,7 @@ export const AddProductDialog = ({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="price">Price ($)</Label>
+            <Label htmlFor="price">Price (₹)</Label>
             <Input
               id="price"
               name="price"
@@ -98,8 +98,13 @@ export const AddProductDialog = ({
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="clothing">Clothing</SelectItem>
-                <SelectItem value="diary">Diary</SelectItem>
+                <SelectItem value="tote_bags">Tote Bags</SelectItem>
+                <SelectItem value="tshirts">T-Shirts</SelectItem>
+                <SelectItem value="patchwork">Patchwork Tops & Shirts</SelectItem>
+                <SelectItem value="diaries">Diaries</SelectItem>
+                <SelectItem value="gamcha">Gamcha</SelectItem>
+                <SelectItem value="gifts">Gifts for Your Beloved</SelectItem>
+                <SelectItem value="custom">Create Your Own</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -155,3 +160,4 @@ export const AddProductDialog = ({
     </DialogContent>
   );
 };
+

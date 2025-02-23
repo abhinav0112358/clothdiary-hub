@@ -4,7 +4,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  category: "clothing" | "diary";
+  category: "tote_bags" | "tshirts" | "patchwork" | "diaries" | "gamcha" | "gifts" | "custom";
   imageUrl: string;
   inventory: number;
   offer?: number;
@@ -27,3 +27,4 @@ export interface Order {
   }[];
   status: "pending" | "completed" | "cancelled";
 }
+

@@ -11,6 +11,8 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import ToteBags from "./pages/ToteBags";
+import TShirts from "./pages/TShirts";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/tote-bags" element={<ToteBags />} />
+          <Route path="/t-shirts" element={<TShirts />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
@@ -35,3 +39,4 @@ const App = () => (
 );
 
 export default App;
+
