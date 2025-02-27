@@ -1,14 +1,36 @@
 
 import { Link } from "react-router-dom";
-import { ShoppingCart, User, Heart, Search } from "lucide-react";
+import { ShoppingCart, Settings, Heart, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const userRole = localStorage.getItem("userRole");
+  const userName = localStorage.getItem("userName");
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userName");
+    toast({
+      title: "Logged out successfully",
+      description: "Come back soon!",
+    });
+    navigate("/");
+  };
 
   useEffect(() => {
     const updateCartCount = () => {
@@ -19,8 +41,6 @@ export const Navbar = () => {
 
     updateCartCount();
     window.addEventListener("storage", updateCartCount);
-    
-    // Custom event listener for cart updates
     window.addEventListener("cartUpdated", updateCartCount);
 
     return () => {
@@ -94,15 +114,36 @@ export const Navbar = () => {
                     </span>
                   </Button>
                 </Link>
-                <Link to={userRole === "admin" ? "/admin/products" : "/profile"}>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    className="hover:bg-gray-100 transition-colors"
-                  >
-                    <User className="h-5 w-5" />
-                  </Button>
-                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="hover:bg-gray-100 transition-colors">
+                      <Settings className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {userName && (
+                      <>
+                        <div className="px-2 py-1.5 text-sm font-medium">
+                          Hello, {userName}
+                        </div>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+                    <DropdownMenuItem onClick={() => navigate(userRole === "admin" ? "/admin/products" : "/profile")}>
+                      {userRole === "admin" ? "Admin Dashboard" : "My Profile"}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/orders")}>
+                      My Orders
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/wishlist")}>
+                      My Wishlist
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Link to="/cart">
                   <Button variant="ghost" size="icon" className="relative">
                     <ShoppingCart className="h-5 w-5" />
@@ -113,11 +154,21 @@ export const Navbar = () => {
                 </Link>
               </>
             ) : (
-              <Link to="/auth/login">
-                <Button variant="outline" size="sm">
-                  Sign In
-                </Button>
-              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="hover:bg-gray-100 transition-colors">
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/auth/login")}>
+                    Sign In
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/auth/signup")}>
+                    Sign Up
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
         </div>
