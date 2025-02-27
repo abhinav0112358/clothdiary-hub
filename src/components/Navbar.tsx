@@ -120,7 +120,7 @@ export const Navbar = () => {
                       <Settings className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuContent align="end" className="w-48 bg-white shadow-md border border-gray-200">
                     {userName && (
                       <>
                         <div className="px-2 py-1.5 text-sm font-medium">
@@ -160,7 +160,7 @@ export const Navbar = () => {
                     <Settings className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-48 bg-white shadow-md border border-gray-200">
                   <DropdownMenuItem onClick={() => navigate("/auth/login")}>
                     Sign In
                   </DropdownMenuItem>
