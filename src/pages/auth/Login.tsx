@@ -1,35 +1,121 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { LogIn, Shield } from "lucide-react";
+import { LogIn, Shield, Mail } from "lucide-react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    // This is a mock authentication - in a real app, you'd validate against a backend
-    if (email === "admin@example.com" && password === "admin") {
-      localStorage.setItem("userRole", "admin");
-      toast({
-        title: "Welcome back, Admin!",
-        description: "You've successfully logged in.",
-      });
-      navigate("/admin/products");
-    } else if (email && password) {
+    try {
+      // For demo purposes, still allow the mock admin login
+      if (email === "admin@example.com" && password === "admin") {
+        localStorage.setItem("userRole", "admin");
+        toast({
+          title: "Welcome back, Admin!",
+          description: "You've successfully logged in.",
+        });
+        navigate("/admin/products");
+        return;
+      }
+      
+      // Firebase authentication
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Store user info in localStorage
       localStorage.setItem("userRole", "user");
+      localStorage.setItem("userName", user.displayName || user.email?.split('@')[0] || "User");
+      
       toast({
         title: "Welcome back!",
         description: "You've successfully logged in.",
       });
       navigate("/profile");
+    } catch (error: any) {
+      let errorMessage = "Failed to log in. Please check your credentials.";
+      if (error.code === 'auth/invalid-credential') {
+        errorMessage = "Invalid email or password.";
+      } else if (error.code === 'auth/user-not-found') {
+        errorMessage = "User not found. Please check your email or sign up.";
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = "Incorrect password. Please try again.";
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = "Too many failed login attempts. Please try again later.";
+      }
+      
+      toast({
+        title: "Login Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      console.error("Login error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail.trim()) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setResetLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      toast({
+        title: "Password Reset Email Sent",
+        description: "Check your email for a link to reset your password.",
+      });
+      setResetDialogOpen(false);
+      setResetEmail("");
+    } catch (error: any) {
+      let errorMessage = "Failed to send password reset email.";
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = "No user found with this email address.";
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = "Invalid email address. Please check and try again.";
+      }
+      
+      toast({
+        title: "Reset Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      console.error("Password reset error:", error);
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -54,12 +140,58 @@ const Login = () => {
                 required
                 className="mt-1"
                 placeholder="Enter your email"
+                disabled={loading}
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium">
-                Password
-              </label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="block text-sm font-medium">
+                  Password
+                </label>
+                <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="px-0 text-sm font-medium text-primary"
+                    >
+                      Forgot password?
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Reset your password</DialogTitle>
+                      <DialogDescription>
+                        Enter your email address and we'll send you a link to reset your password.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handlePasswordReset}>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <label htmlFor="resetEmail" className="text-right text-sm font-medium col-span-1">
+                            Email
+                          </label>
+                          <Input
+                            id="resetEmail"
+                            type="email"
+                            className="col-span-3"
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                            placeholder="Enter your email address"
+                            required
+                            disabled={resetLoading}
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button type="submit" disabled={resetLoading}>
+                          {resetLoading ? "Sending..." : "Send Reset Link"}
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
               <Input
                 id="password"
                 type="password"
@@ -68,18 +200,20 @@ const Login = () => {
                 required
                 className="mt-1"
                 placeholder="Enter your password"
+                disabled={loading}
               />
             </div>
           </div>
           <div className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={loading}>
               <LogIn className="mr-2 h-4 w-4" />
-              Sign In
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate("/auth/signup")}
+              disabled={loading}
             >
               Create Account
             </Button>

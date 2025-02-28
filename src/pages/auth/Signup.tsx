@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { UserCheck } from "lucide-react";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -12,16 +14,53 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd send this to your backend
-    localStorage.setItem("userRole", "user");
-    toast({
-      title: "Account created!",
-      description: "Welcome to our platform.",
-    });
-    navigate("/profile");
+    setLoading(true);
+    
+    try {
+      // Create a new user with Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Update the user's profile with their name
+      if (name) {
+        await updateProfile(user, {
+          displayName: name
+        });
+      }
+      
+      // Store user info in localStorage for the app to use
+      localStorage.setItem("userRole", "user");
+      localStorage.setItem("userName", name || email.split('@')[0]);
+      
+      toast({
+        title: "Account created!",
+        description: "Welcome to our platform.",
+      });
+      
+      navigate("/profile");
+    } catch (error: any) {
+      let errorMessage = "Failed to create account.";
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = "This email is already in use. Try logging in instead.";
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = "Invalid email address. Please check and try again.";
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = "Password is too weak. Please use a stronger password.";
+      }
+      
+      toast({
+        title: "Signup Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      console.error("Signup error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -45,6 +84,7 @@ const Signup = () => {
                 required
                 className="mt-1"
                 placeholder="Enter your name"
+                disabled={loading}
               />
             </div>
             <div>
@@ -59,6 +99,7 @@ const Signup = () => {
                 required
                 className="mt-1"
                 placeholder="Enter your email"
+                disabled={loading}
               />
             </div>
             <div>
@@ -72,19 +113,22 @@ const Signup = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="mt-1"
-                placeholder="Choose a password"
+                placeholder="Choose a password (at least 6 characters)"
+                minLength={6}
+                disabled={loading}
               />
             </div>
           </div>
           <div className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={loading}>
               <UserCheck className="mr-2 h-4 w-4" />
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => navigate("/auth/login")}
+              disabled={loading}
             >
               Already have an account? Sign in
             </Button>
