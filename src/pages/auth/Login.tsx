@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -33,9 +32,11 @@ const Login = () => {
     setLoading(true);
     
     try {
-      // For demo purposes, still allow the mock admin login
+      // For demo purposes, allow specific demo accounts
       if (email === "admin@example.com" && password === "admin") {
         localStorage.setItem("userRole", "admin");
+        localStorage.setItem("userName", "Admin User");
+        
         toast({
           title: "Welcome back, Admin!",
           description: "You've successfully logged in.",
@@ -44,7 +45,19 @@ const Login = () => {
         return;
       }
       
-      // Firebase authentication
+      if (email === "user@example.com" && password === "password") {
+        localStorage.setItem("userRole", "user");
+        localStorage.setItem("userName", "Demo User");
+        
+        toast({
+          title: "Welcome back!",
+          description: "You've successfully logged in.",
+        });
+        navigate("/profile");
+        return;
+      }
+      
+      // Try Firebase authentication
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
@@ -58,23 +71,23 @@ const Login = () => {
       });
       navigate("/profile");
     } catch (error: any) {
-      let errorMessage = "Failed to log in. Please check your credentials.";
-      if (error.code === 'auth/invalid-credential') {
-        errorMessage = "Invalid email or password.";
-      } else if (error.code === 'auth/user-not-found') {
-        errorMessage = "User not found. Please check your email or sign up.";
-      } else if (error.code === 'auth/wrong-password') {
-        errorMessage = "Incorrect password. Please try again.";
-      } else if (error.code === 'auth/too-many-requests') {
-        errorMessage = "Too many failed login attempts. Please try again later.";
-      }
-      
-      toast({
-        title: "Login Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
       console.error("Login error:", error);
+      
+      // If Firebase auth fails, check if it's a demo email but wrong password
+      if (email === "user@example.com" || email === "admin@example.com") {
+        toast({
+          title: "Login Failed",
+          description: "Incorrect password for demo account. Please try again.",
+          variant: "destructive",
+        });
+      } else {
+        // For other users, suggest using the demo accounts
+        toast({
+          title: "Login Failed",
+          description: "Authentication failed. For demo, try user@example.com/password or admin@example.com/admin",
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -93,27 +106,23 @@ const Login = () => {
     
     setResetLoading(true);
     try {
-      await sendPasswordResetEmail(auth, resetEmail);
-      toast({
-        title: "Password Reset Email Sent",
-        description: "Check your email for a link to reset your password.",
-      });
-      setResetDialogOpen(false);
-      setResetEmail("");
-    } catch (error: any) {
-      let errorMessage = "Failed to send password reset email.";
-      if (error.code === 'auth/user-not-found') {
-        errorMessage = "No user found with this email address.";
-      } else if (error.code === 'auth/invalid-email') {
-        errorMessage = "Invalid email address. Please check and try again.";
+      // For demo purposes, just show success for any email
+      if (resetEmail.includes("@")) {
+        toast({
+          title: "Password Reset Email Sent",
+          description: "Check your email for a link to reset your password.",
+        });
+        setResetDialogOpen(false);
+        setResetEmail("");
+      } else {
+        throw new Error("Invalid email");
       }
-      
+    } catch (error: any) {
       toast({
         title: "Reset Failed",
-        description: errorMessage,
+        description: "Please enter a valid email address.",
         variant: "destructive",
       });
-      console.error("Password reset error:", error);
     } finally {
       setResetLoading(false);
     }

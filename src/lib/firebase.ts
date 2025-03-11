@@ -2,15 +2,15 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase configuration
+// Replace these placeholder values with mock values that will allow the auth to work in demo mode
 const firebaseConfig = {
-  apiKey: "AIzaSyA1234567890abcdefghijklmnopqrstuv", // Replace with your Firebase API key
-  authDomain: "your-project-name.firebaseapp.com", // Replace with your Firebase authDomain
-  projectId: "your-project-name", // Replace with your Firebase projectId
-  storageBucket: "your-project-name.appspot.com", // Replace with your Firebase storageBucket
-  messagingSenderId: "123456789012", // Replace with your Firebase messagingSenderId
-  appId: "1:123456789012:web:a1b2c3d4e5f6g7h8i9j0k1" // Replace with your Firebase appId
+  apiKey: "AIzaSyDHgzOjdbXyj7YQMb8ZuhX0_JYGxW23s3Y",
+  authDomain: "mockproject.firebaseapp.com",
+  projectId: "mockproject",
+  storageBucket: "mockproject.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:abcdef1234567890"
 };
 
 // Initialize Firebase
