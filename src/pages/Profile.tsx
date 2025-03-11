@@ -16,7 +16,8 @@ import {
   ChevronRight,
   ArrowLeft,
   BadgePercent,
-  Award
+  Award,
+  LogOut
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -76,11 +77,11 @@ const Profile = () => {
   const MenuItem = ({ icon: Icon, label, path, description }: { icon: any; label: string; path: string; description?: string }) => (
     <Button
       variant="ghost"
-      className="w-full justify-between px-6 py-6 h-auto text-base font-normal hover:bg-accent/50 rounded-xl transition-all group overflow-hidden relative"
+      className="w-full justify-between px-6 py-6 h-auto text-base font-normal hover:bg-accent/50 rounded-xl transition-all duration-300 group overflow-hidden relative"
       onClick={() => navigate(path)}
     >
       <div className="flex items-center gap-4 z-10">
-        <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+        <div className="bg-primary/10 p-3 rounded-lg text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300 transform group-hover:scale-110">
           <Icon className="h-5 w-5" />
         </div>
         <div className="text-left">
@@ -90,39 +91,44 @@ const Profile = () => {
           )}
         </div>
       </div>
-      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform duration-300" />
     </Button>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/30">
-      <div className="sticky top-0 z-50 bg-primary text-primary-foreground p-6 flex items-center gap-4 shadow-md">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="hover:bg-primary-foreground/10">
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
-        <div>
-          <h1 className="text-xl font-semibold">Hey! {userName}</h1>
-          <div className="flex items-center gap-2 mt-1">
-            <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/30 px-2">
-              <Award className="w-3 h-3 mr-1" /> Premium Member
-            </Badge>
-            <p className="text-sm text-primary-foreground/80">
-              200 points
-            </p>
+    <div className="min-h-screen bg-gradient-to-b from-background via-secondary/10 to-secondary/30 pb-20">
+      <div className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground p-6 backdrop-blur-sm shadow-lg">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="hover:bg-primary-foreground/10 transition-all duration-300">
+              <ArrowLeft className="h-6 w-6" />
+            </Button>
+            <div className="animate-fade-in">
+              <h1 className="text-xl font-semibold">Hey! {userName}</h1>
+              <div className="flex items-center gap-2 mt-1">
+                <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/30 px-2 animate-pulse">
+                  <Award className="w-3 h-3 mr-1" /> Premium Member
+                </Badge>
+                <p className="text-sm text-primary-foreground/80">
+                  200 points
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 pt-8 pb-20">
+      <div className="max-w-3xl mx-auto px-4 pt-8 pb-20 animate-fade-up">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {menuItems.map((item, index) => (
             <Button
               key={index}
               variant="outline"
-              className="h-auto p-6 justify-start gap-4 rounded-xl border-2 hover:border-primary/50 hover:shadow-md transition-all"
+              className="h-auto p-6 justify-start gap-4 rounded-xl border-2 hover:border-primary/60 hover:shadow-lg transition-all duration-300 group bg-card hover:bg-card/90"
               onClick={() => navigate(item.path)}
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="bg-primary/10 p-3 rounded-lg">
+              <div className="bg-primary/10 p-3 rounded-lg transform group-hover:scale-110 transition-transform duration-300">
                 <item.icon className="h-6 w-6 text-primary" />
               </div>
               <span className="text-base font-medium">{item.label}</span>
@@ -131,7 +137,7 @@ const Profile = () => {
         </div>
 
         <div className="space-y-8">
-          <section className="bg-card rounded-2xl shadow-sm border p-4">
+          <section className="bg-card rounded-2xl shadow-md border p-4 hover:shadow-lg transition-all duration-300">
             <h2 className="text-lg font-semibold px-2 mb-4 flex items-center">
               <BadgePercent className="h-5 w-5 mr-2 text-primary" />
               Credit Options
@@ -149,7 +155,7 @@ const Profile = () => {
             </div>
           </section>
 
-          <section className="bg-card rounded-2xl shadow-sm border p-4">
+          <section className="bg-card rounded-2xl shadow-md border p-4 hover:shadow-lg transition-all duration-300">
             <h2 className="text-lg font-semibold px-2 mb-4 flex items-center">
               <User className="h-5 w-5 mr-2 text-primary" />
               Account Settings
@@ -169,10 +175,11 @@ const Profile = () => {
           <div className="px-2 mt-10">
             <Button 
               variant="destructive" 
-              className="w-full rounded-xl py-6 shadow-sm hover:shadow-md transition-all"
+              className="w-full rounded-xl py-6 shadow-sm hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
               onClick={handleLogout}
             >
-              Logout
+              <LogOut className="h-5 w-5" />
+              <span>Logout</span>
             </Button>
           </div>
         </div>
