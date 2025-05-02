@@ -2,8 +2,9 @@
 import { useState, useEffect } from "react";
 import { CartItem } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Trash2, Plus, Minus } from "lucide-react";
+import { Trash2, Plus, Minus, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -110,7 +111,12 @@ const Cart = () => {
                 <span>Total</span>
                 <span className="font-medium">₹{usdToInr(total).toFixed(0)}</span>
               </div>
-              <Button className="w-full">Proceed to Checkout</Button>
+              <Button className="w-full flex items-center gap-2" asChild>
+                <Link to="/checkout">
+                  Proceed to Checkout
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
