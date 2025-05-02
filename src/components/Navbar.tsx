@@ -12,11 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [wishlistCount, setWishlistCount] = useState(0);
   const userRole = localStorage.getItem("userRole");
   const userName = localStorage.getItem("userName");
   const navigate = useNavigate();
@@ -39,13 +40,24 @@ export const Navbar = () => {
       setCartCount(count);
     };
 
+    const updateWishlistCount = () => {
+      const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+      setWishlistCount(wishlist.length);
+    };
+
     updateCartCount();
+    updateWishlistCount();
+
     window.addEventListener("storage", updateCartCount);
     window.addEventListener("cartUpdated", updateCartCount);
+    window.addEventListener("storage", updateWishlistCount);
+    window.addEventListener("wishlistUpdated", updateWishlistCount);
 
     return () => {
       window.removeEventListener("storage", updateCartCount);
       window.removeEventListener("cartUpdated", updateCartCount);
+      window.removeEventListener("storage", updateWishlistCount);
+      window.removeEventListener("wishlistUpdated", updateWishlistCount);
     };
   }, []);
 
@@ -110,7 +122,7 @@ export const Navbar = () => {
                   <Button variant="ghost" size="icon" className="relative">
                     <Heart className="h-5 w-5" />
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                      0
+                      {wishlistCount}
                     </span>
                   </Button>
                 </Link>
